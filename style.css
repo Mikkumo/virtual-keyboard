@@ -1,3 +1,7 @@
+html {
+    background: url('./assets/images/viol_glicinia.jpg');
+}
+
 .text {
     width: 680px;
     height: 100px;
@@ -37,7 +41,7 @@
     border: none;
     background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     outline: none;
     cursor: pointer;
     display: inline-flex;
@@ -75,8 +79,23 @@ p {
     width: 340px;
 }
 
+.capslock--activatable::after {
+    content: '';
+    top: 10px;
+    right: 10px;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+}
+
+.capslock--active::after {
+    background: #08ff00;
+}
+
 .keyboard sup {
-    margin: -10px 0 0 -20px;
+    margin: 0 25px 20px 0;
     font-size: 12px;
     position: absolute;
 }
