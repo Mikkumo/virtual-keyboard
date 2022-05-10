@@ -244,88 +244,61 @@ const rus = document.querySelectorAll('.RU')
 const eng = document.querySelectorAll('.ENG')
 let userLanguage = localStorage.getItem('lang')
 
-function switchLang(switchL, ...codes) {
-    const pressSwitch = new Set()
+function switchLang() {
+    console.log(userLanguage + " switch")
+    if (userLanguage === 'ru') {
+        eng.forEach(elem => {
+            elem.classList.add('hidden')
+            localStorage.setItem('lang', 'en')
+            userLanguage = 'en'
+        })
+        rusEngSwopper()
+    } else {
+        rus.forEach(elem => {
+            elem.classList.add('hidden')
+            localStorage.setItem('lang', 'ru')
+            userLanguage = 'ru'
+        })
+        rusEngSwopper()
+    }
+}
 
-    document.addEventListener('keydown', (event) => {
-        pressSwitch.add(event.code)
-        for (const cod of codes) {
-            if (!pressSwitch.has(cod)) return
-        }
-        pressSwitch.clear()
-        switchL()
+function rusEngSwopper() {
+    rus.forEach(elem => {
+        elem.classList.toggle('hidden')
     })
-    document.addEventListener('keyup', (event) => {
-        pressSwitch.delete(event.code)
+    eng.forEach(elem => {
+        elem.classList.toggle('hidden')
     })
 }
 
-if (userLanguage === 'ru') {
-    eng.forEach(elem => {
-        elem.classList.add('hidden')
-        localStorage.setItem('lang', 'ru')
-        userLanguage = 'ru'
-    })
-} else {
-    rus.forEach(elem => {
-        elem.classList.add('hidden')
-        localStorage.setItem('lang', 'en')
-        userLanguage = 'en'
-    })
-}
+document.addEventListener('DOMContentLoaded', function(event) {
+    if (userLanguage === 'ru') userLanguage = 'en'
+    else userLanguage = 'ru'
+    switchLang()
+})
 
-switchLang(() => {
-    rus.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-    eng.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-
-    if (userLanguage === 'ru') {
-        localStorage.setItem('lang', 'en')
-    } else if (userLanguage === 'en') {
-        localStorage.setItem('lang', 'ru')
+document.addEventListener('keydown', function(event) {
+    if (event.shiftKey && event.altKey) {
+        switchLang()
     }
-}, 'ShiftLeft', 'AltLeft')
-
-switchLang(() => {
-    rus.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-    eng.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-
-    if (userLanguage === 'ru') {
-        localStorage.setItem('lang', 'en')
-    } else if (userLanguage === 'en') {
-        localStorage.setItem('lang', 'ru')
-    }
-}, 'ShiftRight', 'AltRight')
+  });
 
 let caps = false
 
 keys.forEach((element) => {
     element.addEventListener('click', (event) => {
-        for (let i = 0; i < keyCodes.length; i+=1) { 
-            result.value += ` ${keyCodes[i]} `
-            // if (event.code === keyCodes[i]) {
-            //     // if (event.code === 'CapsLock') {
-            //     //     //result.value += ` ${keyCodes[i]} `
-            //     //     keys[i].classList.toggle('capslock--active')
-            //     //     result.focus()
-            //     // }
-            //     if (event.code === 'Tab') {
-            //         result.value += '  tab  '
-            //         result.focus()
-            //     }
-            //     //result.value += `${event.code}  `
-            //     keys[i].classList.add('active')
-            //     setTimeout(() => keys[i].classList.remove('active'), 200)
-            //     result.focus()
-            // }
-        }
-    result.focus()
+        if (userLanguage === 'ru') {
+            result.value += element.children[0].innerHTML
+            result.focus()
+            return
+        
+        }    
+        if (userLanguage === 'en') {
+            result.value += element.children[1].innerHTML
+            result.focus()
+            return
+        } 
+    })
 })
-})
+
