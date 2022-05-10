@@ -8,48 +8,48 @@ function show() {
                 <span>ё</span><sup>~</sup>
             </div>
             <div class="key">
-                <span>1</span><sup>!</sup>
+                <span class="ENG">1</span><span class="RU">1</span><sup>!</sup>
             </div>
             <div class="key">
-                <span>2</span><sup class="ENG">@</sup><sup class="RU">"</sup>
+                <span class="ENG">2</span><span class="RU">2</span><sup class="ENG">@</sup><sup class="RU">"</sup>
             </div>
             <div class="key">
-                <span>3</span><sup class="ENG">#</sup><sup class="RU">№</sup>
+                <span class="ENG">3</span><span class="RU">3</span><sup class="ENG">#</sup><sup class="RU">№</sup>
             </div>
             <div class="key">
-                <span>4</span><sup class="ENG">$</sup><sup class="RU">;</sup>
+                <span class="ENG">4</span><span class="RU">4</span><sup class="ENG">$</sup><sup class="RU">;</sup>
             </div>
             <div class="key">
-                <span>5</span><sup>%</sup>
+                <span class="ENG">5</span><span class="RU">5</span><sup>%</sup>
             </div>
             <div class="key">
-                <span>6</span><sup class="ENG">^</sup><sup class="RU">:</sup>
+                <span class="ENG">6</span><span class="RU">6</span><sup class="ENG">^</sup><sup class="RU">:</sup>
             </div>
             <div class="key">
-                <span>7</span><sup class="ENG">&</sup><sup class="RU">?</sup>
+                <span class="ENG">7</span><span class="RU">7</span><sup class="ENG">&</sup><sup class="RU">?</sup>
             </div>
             <div class="key">
-                <span>8</span><sup>*</sup>
+                <span class="ENG">8</span><span class="RU">8</span><sup>*</sup>
             </div>
             <div class="key">
-                <span>9</span><sup>(</sup>
+                <span class="ENG">9</span><span class="RU">9</span><sup>(</sup>
             </div>
             <div class="key">
-                <span>0</span><sup>)</sup>
+                <span class="ENG">0</span><span class="RU">0</span><sup>)</sup>
             </div>
             <div class="key">
-                <span>-</span><sup>_</sup>
+                <span  class="ENG">-</span><span  class="RU">-</span><sup>_</sup>
             </div>
             <div class="key">
-                <span>=</span><sup>+</sup>
+                <span  class="ENG">=</span><span  class="RU">=</span><sup>+</sup>
             </div>
             <div class="key backspace">
-                <span><i class="material-icons">backspace</i></span>
+                <i class="material-icons">backspace</i>
             </div>
         </div>
         <div class="row">
-            <div class="key tab" id="tab">
-                <span><i class="material-icons">keyboard_tab</i></span>
+            <div class="key tab">
+                <i class="material-icons">keyboard_tab</i>
             </div>
             <div class="key">
                 <span class="RU">й</span><span class="ENG">q</span>
@@ -93,7 +93,7 @@ function show() {
         </div>
         <div class="row">
             <div class="key capslock capslock--activatable">
-                <span><i class="material-icons">keyboard_capslock</i></span>
+                <i class="material-icons">keyboard_capslock</i>
             </div>
             <div class="key">
                 <span class="RU">ф</span><span class="ENG">a</span>
@@ -129,7 +129,7 @@ function show() {
                 <span class="RU">э</span><span class="ENG">'</span><sup class="ENG">"</sup>
             </div>
             <div class="key enter">
-                <span><i class="material-icons">keyboard_return</i></span>
+                <i class="material-icons">keyboard_return</i>
             </div>
         </div>
         <div class="row">
@@ -170,7 +170,7 @@ function show() {
                 <span class="RU">.</span><span class="ENG">/</span><sup class="RU">,</sup><sup class="ENG">?</sup>
             </div>
             <div class="key">
-                <span class="ArrowUp"><i class="material-icons">keyboard_arrow_up</i></span>
+                <i class="material-icons">keyboard_arrow_up</i>
             </div>
             <div class="key shiftR">
                 <span>Shift</span>
@@ -196,13 +196,13 @@ function show() {
                 <span>Ctrl</span>
             </div>
             <div class="key">
-                <span><i class="material-icons">keyboard_arrow_left</i></span>
+                <i class="material-icons">keyboard_arrow_left</i>
             </div>
             <div class="key">
-                <span><i class="material-icons">keyboard_arrow_down</i></span>
+                <i class="material-icons">keyboard_arrow_down</i>
             </div>
             <div class="key">
-                <span><i class="material-icons">keyboard_arrow_right</i></span>
+                <i class="material-icons">keyboard_arrow_right</i>
             </div>
         </div>
     </div>
@@ -282,23 +282,95 @@ document.addEventListener('keydown', function(event) {
     if (event.shiftKey && event.altKey) {
         switchLang()
     }
-  });
+})
 
 let caps = false
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'CapsLock') {
+        if (caps) caps = false
+        else caps = true
+        keys.forEach((elem) => { 
+            if (elem.children[0].className !== 'material-icons' && elem.className === 'key')
+            if (caps) { 
+                console.log(elem.children[0].className + "")
+                elem.children[0].innerHTML = elem.children[0].innerHTML.toUpperCase()
+                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toUpperCase()
+            } else {
+                elem.children[0].innerHTML = elem.children[0].innerHTML.toLowerCase()
+                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toLowerCase()
+            }
+        })
+    }
+})
 
 keys.forEach((element) => {
     element.addEventListener('click', (event) => {
+        switch (element.children[0].innerHTML) {
+            case 'backspace':
+                result.value = result.value.slice(0, -1)
+                result.focus()
+                return
+            case 'keyboard_tab':
+                result.value += '   '
+                result.focus()
+                return
+            case 'Del':
+                result.value += ' del '
+                result.focus()
+                return    
+            case 'keyboard_capslock':
+                element.classList.toggle('capslock--active');
+                (caps) ? caps = false : caps = true;
+                result.focus()
+                return    
+            case 'keyboard_return':
+                result.value += '\n'
+                result.focus()
+                return
+            case 'keyboard_arrow_up':
+                 
+                result.value = result.value.substring(0, result.value.length - 1)
+                result.focus()
+                return
+            case 'space_bar':
+                result.value += ' '
+                result.focus()
+                return
+            case 'keyboard_arrow_left':
+                //result.value.moveCursor(result. - 1)
+                result.value += 'left'
+                result.focus()
+                return
+            case 'keyboard_arrow_down':
+                result.value += 'down'
+                result.focus()
+                return
+            case 'keyboard_arrow_right':
+                result.value += 'right'
+                result.focus()
+                return
+            case 'Shift':
+            case 'Alt':
+            case 'Ctrl':
+            case 'Win':
+                result.focus()
+                break 
+        }
+
         if (userLanguage === 'ru') {
+            if (caps === true) {
+                result.value += element.children[0].innerHTML.toUpperCase()
+                return
+            }
             result.value += element.children[0].innerHTML
             result.focus()
             return
-        
         }    
         if (userLanguage === 'en') {
+            if (element.children[1] === undefined) return
             result.value += element.children[1].innerHTML
             result.focus()
             return
         } 
     })
 })
-
