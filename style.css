@@ -112,3 +112,87 @@ p {
     color: rgb(0, 0, 0);
     transform: scale(.9)
 }
+
+@media (max-width: 1279px) {
+    .text {
+        width: 560px;
+        height: 180px;
+        margin: 30px auto;
+        font-size: 20px;
+    }
+
+    .keyboard {
+        width: 670px;
+    }
+
+    .key {
+        margin: 1px;
+    }
+
+    .keyboard .backspace {
+        width: 70px;
+    }
+
+    .keyboard .capslock, 
+    .keyboard .enter {
+        width: 78px;
+    }
+
+    .keyboard .tab,
+    .keyboard .del,
+    .keyboard .shiftL,
+    .keyboard .shiftR {
+        width: 55px;
+    }
+
+    .keyboard .space {
+        width: 300px;
+    }
+}
+
+@media (max-width: 767px) {
+    .text {
+        width: 280px;
+        height: 180px;
+        margin: 30px auto;
+        font-size: 20px;
+    }
+
+    .keyboard p {
+        display: none;
+    }
+
+    .keyboard {
+        width: 280px;
+    }
+
+    .key {
+        width: 15px;
+        height: 30px;
+        margin: 0px;
+    }
+
+    .keyboard sup {
+        display: none;
+    }
+
+    .keyboard .backspace {
+        width: 33px;
+    }
+
+    .keyboard .capslock, 
+    .keyboard .enter {
+        width: 78px;
+    }
+
+    .keyboard .tab,
+    .keyboard .del,
+    .keyboard .shiftL,
+    .keyboard .shiftR {
+        width: 55px;
+    }
+
+    .keyboard .space {
+        width: 50px;
+    }
+}
