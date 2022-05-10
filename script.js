@@ -210,7 +210,6 @@ function show() {
     <p>Для переключения языка нажмите либо левыe Shift + Alt, либо правые Shift + Alt</p>`
     body.insertAdjacentHTML('afterbegin', content);
 }
-
 show()
 
 const keyCodes = ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace', 
