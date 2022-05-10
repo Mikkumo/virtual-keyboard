@@ -1,4 +1,4 @@
-function show() {
+function show() {   
     const body = document.querySelector('body')
     const content =`
         <textarea class="text" id="text" autofocus></textarea>
@@ -8,48 +8,48 @@ function show() {
                 <span>ё</span><sup>~</sup>
             </div>
             <div class="key">
-                <span>1</span><sup>!</sup>
+                <span class="ENG">1</span><span class="RU">1</span><sup>!</sup>
             </div>
             <div class="key">
-                <span>2</span><sup class="ENG">@</sup><sup class="RU">"</sup>
+                <span class="ENG">2</span><span class="RU">2</span><sup class="ENG">@</sup><sup class="RU">"</sup>
             </div>
             <div class="key">
-                <span>3</span><sup class="ENG">#</sup><sup class="RU">№</sup>
+                <span class="ENG">3</span><span class="RU">3</span><sup class="ENG">#</sup><sup class="RU">№</sup>
             </div>
             <div class="key">
-                <span>4</span><sup class="ENG">$</sup><sup class="RU">;</sup>
+                <span class="ENG">4</span><span class="RU">4</span><sup class="ENG">$</sup><sup class="RU">;</sup>
             </div>
             <div class="key">
-                <span>5</span><sup>%</sup>
+                <span class="ENG">5</span><span class="RU">5</span><sup>%</sup>
             </div>
             <div class="key">
-                <span>6</span><sup class="ENG">^</sup><sup class="RU">:</sup>
+                <span class="ENG">6</span><span class="RU">6</span><sup class="ENG">^</sup><sup class="RU">:</sup>
             </div>
             <div class="key">
-                <span>7</span><sup class="ENG">&</sup><sup class="RU">?</sup>
+                <span class="ENG">7</span><span class="RU">7</span><sup class="ENG">&</sup><sup class="RU">?</sup>
             </div>
             <div class="key">
-                <span>8</span><sup>*</sup>
+                <span class="ENG">8</span><span class="RU">8</span><sup>*</sup>
             </div>
             <div class="key">
-                <span>9</span><sup>(</sup>
+                <span class="ENG">9</span><span class="RU">9</span><sup>(</sup>
             </div>
             <div class="key">
-                <span>0</span><sup>)</sup>
+                <span class="ENG">0</span><span class="RU">0</span><sup>)</sup>
             </div>
             <div class="key">
-                <span>-</span><sup>_</sup>
+                <span  class="ENG">-</span><span  class="RU">-</span><sup>_</sup>
             </div>
             <div class="key">
-                <span>=</span><sup>+</sup>
+                <span  class="ENG">=</span><span  class="RU">=</span><sup>+</sup>
             </div>
             <div class="key backspace">
-                <span><i class="material-icons">backspace</i></span>
+                <i class="material-icons">backspace</i>
             </div>
         </div>
         <div class="row">
             <div class="key tab">
-                <span><i class="material-icons">keyboard_tab</i></span>
+                <i class="material-icons">keyboard_tab</i>
             </div>
             <div class="key">
                 <span class="RU">й</span><span class="ENG">q</span>
@@ -93,7 +93,7 @@ function show() {
         </div>
         <div class="row">
             <div class="key capslock capslock--activatable">
-                <span><i class="material-icons">keyboard_capslock</i></span>
+                <i class="material-icons">keyboard_capslock</i>
             </div>
             <div class="key">
                 <span class="RU">ф</span><span class="ENG">a</span>
@@ -129,7 +129,7 @@ function show() {
                 <span class="RU">э</span><span class="ENG">'</span><sup class="ENG">"</sup>
             </div>
             <div class="key enter">
-                <span><i class="material-icons">keyboard_return</i></span>
+                <i class="material-icons">keyboard_return</i>
             </div>
         </div>
         <div class="row">
@@ -170,7 +170,7 @@ function show() {
                 <span class="RU">.</span><span class="ENG">/</span><sup class="RU">,</sup><sup class="ENG">?</sup>
             </div>
             <div class="key">
-                <span class="ArrowUp"><i class="material-icons">keyboard_arrow_up</i></span>
+                <i class="material-icons">keyboard_arrow_up</i>
             </div>
             <div class="key shiftR">
                 <span>Shift</span>
@@ -186,7 +186,7 @@ function show() {
             <div class="key altL">
                 <span>Alt</span>
             </div>
-            <div class="key space">
+            <div class="key space" id="space">
                 <i class="material-icons">space_bar</i>
             </div>
             <div class="key altR">
@@ -196,13 +196,13 @@ function show() {
                 <span>Ctrl</span>
             </div>
             <div class="key">
-                <span><i class="material-icons">keyboard_arrow_left</i></span>
+                <i class="material-icons">keyboard_arrow_left</i>
             </div>
             <div class="key">
-                <span><i class="material-icons">keyboard_arrow_down</i></span>
+                <i class="material-icons">keyboard_arrow_down</i>
             </div>
             <div class="key">
-                <span><i class="material-icons">keyboard_arrow_right</i></span>
+                <i class="material-icons">keyboard_arrow_right</i>
             </div>
         </div>
     </div>
@@ -222,10 +222,18 @@ const keys = document.querySelectorAll('.key')
 const result = document.getElementById('text')
 
 document.addEventListener('keydown', (event) => {
-    for (let i = 0; i < keys.length; i+=1) { 
+    for (let i = 0; i < keys.length; i++) { 
         if (event.code === keyCodes[i]) {
-            keys[i].classList.add('act')
-            setTimeout(() => keys[i].classList.remove('act'), 200)
+            if (event.code === 'CapsLock') {
+                keys[i].classList.toggle('capslock--active')
+                result.focus()
+            }
+            if (event.code === 'Tab') {
+                result.value += '    '
+                result.focus()
+            }
+            keys[i].classList.add('active')
+            setTimeout(() => keys[i].classList.remove('active'), 200)
             result.focus()
         }
     }
@@ -236,118 +244,111 @@ const rus = document.querySelectorAll('.RU')
 const eng = document.querySelectorAll('.ENG')
 let userLanguage = localStorage.getItem('lang')
 
-function switchLang(switchL, ...codes) {
-    const pressSwitch = new Set()
+function switchLang() {
+    console.log(userLanguage + " switch")
+    if (userLanguage === 'ru') {
+        eng.forEach(elem => {
+            elem.classList.add('hidden')
+            localStorage.setItem('lang', 'en')
+            userLanguage = 'en'
+        })
+        rusEngSwopper()
+    } else {
+        rus.forEach(elem => {
+            elem.classList.add('hidden')
+            localStorage.setItem('lang', 'ru')
+            userLanguage = 'ru'
+        })
+        rusEngSwopper()
+    }
+}
 
-    document.addEventListener('keydown', (event) => {
-        pressSwitch.add(event.code)
-        for (const cod of codes) {
-            if (!pressSwitch.has(cod)) return
-        }
-        pressSwitch.clear()
-        switchL()
+function rusEngSwopper() {
+    rus.forEach(elem => {
+        elem.classList.toggle('hidden')
     })
-    document.addEventListener('keyup', (event) => {
-        pressSwitch.delete(event.code)
+    eng.forEach(elem => {
+        elem.classList.toggle('hidden')
     })
 }
 
-switchLang(() => {
-    rus.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-    eng.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
+document.addEventListener('DOMContentLoaded', function(event) {
+    if (userLanguage === 'ru') userLanguage = 'en'
+    else userLanguage = 'ru'
+    switchLang()
+})
 
-    if (userLanguage === 'ru') {
-        localStorage.setItem('lang', 'en')
-    } else if (userLanguage === 'en') {
-        localStorage.setItem('lang', 'ru')
+document.addEventListener('keydown', function(event) {
+    if (event.shiftKey && event.altKey) {
+        switchLang()
     }
-}, 'ShiftLeft', 'AltLeft')
-
-switchLang(() => {
-    rus.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-    eng.forEach(elem => {
-        elem.classList.toggle('hidden')
-    })
-
-    if (userLanguage === 'ru') {
-        localStorage.setItem('lang', 'en')
-    } else if (userLanguage === 'en') {
-        localStorage.setItem('lang', 'ru')
-    }
-}, 'ShiftRight', 'AltRight')
-
-if (userLanguage === 'ru') {
-    eng.forEach(elem => {
-        elem.classList.add('hidden')
-        localStorage.setItem('lang', 'ru')
-        userLanguage = 'ru'
-    })
-} else {
-    rus.forEach(elem => {
-        elem.classList.add('hidden')
-        localStorage.setItem('lang', 'en')
-        userLanguage = 'en'
-    })
-}
+})
 
 let caps = false
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'CapsLock') {
+        if (caps) caps = false
+        else caps = true
+        keys.forEach((elem) => { 
+            if (elem.children[0].className !== 'material-icons' && elem.className === 'key')
+            if (caps) { 
+                console.log(elem.children[0].className + "")
+                elem.children[0].innerHTML = elem.children[0].innerHTML.toUpperCase()
+                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toUpperCase()
+            } else {
+                elem.children[0].innerHTML = elem.children[0].innerHTML.toLowerCase()
+                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toLowerCase()
+            }
+        })
+    }
+})
 
 keys.forEach((element) => {
     element.addEventListener('click', (event) => {
-        if (userLanguage === 'ru') {
-            if (caps === true) {
-                result.value += event.target.textContent[0].toUpperCase()
-                return
-            }
-            result.value += event.target.textContent[0]
-            result.focus()
-            return
-        } 
-        if (userLanguage === 'en') {
-            if (event.target.textContent.length === 2) {
-                result.value += event.target.textContent[1]
-                result.focus()
-                return
-            }
-            result.value += event.target.textContent[0]
-            result.focus()
-        }
-    })
-})
-
-keyCodes.forEach(elem => {
-    element.addEventListener('click', (event) => {
-        switch (elem) {
-            case 'Backspace':
+        switch (element.children[0].innerHTML) {
+            case 'backspace':
                 result.value = result.value.slice(0, -1)
                 result.focus()
-                break 
-            case 'Tab':
-                result.value += '    '
+                return
+            case 'keyboard_tab':
+                result.value += '   '
                 result.focus()
-                break
-            case 'Delete':
-                result.value += '  del  '
-                break
-            case 'CapsLock':
-                caps = !caps
-                //element.toggle('capslock--active')
+                return
+            case 'Del':
+                result.value += ' del '
                 result.focus()
-                break
-            case 'Space':
-                result.value += '  g  '
-                break
-            case 'Enter':
+                return    
+            case 'keyboard_capslock':
+                element.classList.toggle('capslock--active');
+                (caps) ? caps = false : caps = true;
+                result.focus()
+                return    
+            case 'keyboard_return':
                 result.value += '\n'
                 result.focus()
-                break 
-              
+                return
+            case 'keyboard_arrow_up':
+                 
+                result.value = result.value.substring(0, result.value.length - 1)
+                result.focus()
+                return
+            case 'space_bar':
+                result.value += ' '
+                result.focus()
+                return
+            case 'keyboard_arrow_left':
+                //result.value.moveCursor(result. - 1)
+                result.value += 'left'
+                result.focus()
+                return
+            case 'keyboard_arrow_down':
+                result.value += 'down'
+                result.focus()
+                return
+            case 'keyboard_arrow_right':
+                result.value += 'right'
+                result.focus()
+                return
             case 'Shift':
             case 'Alt':
             case 'Ctrl':
@@ -355,32 +356,21 @@ keyCodes.forEach(elem => {
                 result.focus()
                 break 
         }
-       
-        // if (event.document.querySelector === 'space') {
-        //     result.value += '   gg    ';
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === 'Caps Lock') {
-        //     caps = !caps;
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === '') {
-        //     result.value += ' g ';
-        //     res.focus();
-        //     return;
-        // } if (event.document.querySelector === 'shiftR' || event.querySelector === 'shiftL' || event.target.textContent === 'Ctrl' || event.target.textContent === 'Win') {
-        //     result.value = result.value.substring(0, result.value.length - 1)
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === 'Enter') {
-        //     result.value += '\n';
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === 'Backspace') {
-        //     result.value = result.value.slice(0, -1);
-        //     res.focus();
-        //     //return;
-        // }
 
+        if (userLanguage === 'ru') {
+            if (caps === true) {
+                result.value += element.children[0].innerHTML.toUpperCase()
+                return
+            }
+            result.value += element.children[0].innerHTML
+            result.focus()
+            return
+        }    
+        if (userLanguage === 'en') {
+            if (element.children[1] === undefined) return
+            result.value += element.children[1].innerHTML
+            result.focus()
+            return
+        } 
     })
 })
