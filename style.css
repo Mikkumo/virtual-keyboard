@@ -106,3 +106,9 @@ p {
 .hidden {
     display: none;
 }
+
+.active {
+    background: #b9b8b3;
+    color: rgb(0, 0, 0);
+    transform: scale(.9)
+}

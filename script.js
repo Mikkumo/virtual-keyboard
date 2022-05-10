@@ -1,4 +1,4 @@
-function show() {
+function show() {   
     const body = document.querySelector('body')
     const content =`
         <textarea class="text" id="text" autofocus></textarea>
@@ -48,7 +48,7 @@ function show() {
             </div>
         </div>
         <div class="row">
-            <div class="key tab">
+            <div class="key tab" id="tab">
                 <span><i class="material-icons">keyboard_tab</i></span>
             </div>
             <div class="key">
@@ -186,7 +186,7 @@ function show() {
             <div class="key altL">
                 <span>Alt</span>
             </div>
-            <div class="key space">
+            <div class="key space" id="space">
                 <i class="material-icons">space_bar</i>
             </div>
             <div class="key altR">
@@ -222,10 +222,18 @@ const keys = document.querySelectorAll('.key')
 const result = document.getElementById('text')
 
 document.addEventListener('keydown', (event) => {
-    for (let i = 0; i < keys.length; i+=1) { 
+    for (let i = 0; i < keys.length; i++) { 
         if (event.code === keyCodes[i]) {
-            keys[i].classList.add('act')
-            setTimeout(() => keys[i].classList.remove('act'), 200)
+            if (event.code === 'CapsLock') {
+                keys[i].classList.toggle('capslock--active')
+                result.focus()
+            }
+            if (event.code === 'Tab') {
+                result.value += '    '
+                result.focus()
+            }
+            keys[i].classList.add('active')
+            setTimeout(() => keys[i].classList.remove('active'), 200)
             result.focus()
         }
     }
@@ -249,6 +257,20 @@ function switchLang(switchL, ...codes) {
     })
     document.addEventListener('keyup', (event) => {
         pressSwitch.delete(event.code)
+    })
+}
+
+if (userLanguage === 'ru') {
+    eng.forEach(elem => {
+        elem.classList.add('hidden')
+        localStorage.setItem('lang', 'ru')
+        userLanguage = 'ru'
+    })
+} else {
+    rus.forEach(elem => {
+        elem.classList.add('hidden')
+        localStorage.setItem('lang', 'en')
+        userLanguage = 'en'
     })
 }
 
@@ -282,105 +304,28 @@ switchLang(() => {
     }
 }, 'ShiftRight', 'AltRight')
 
-if (userLanguage === 'ru') {
-    eng.forEach(elem => {
-        elem.classList.add('hidden')
-        localStorage.setItem('lang', 'ru')
-        userLanguage = 'ru'
-    })
-} else {
-    rus.forEach(elem => {
-        elem.classList.add('hidden')
-        localStorage.setItem('lang', 'en')
-        userLanguage = 'en'
-    })
-}
-
 let caps = false
 
 keys.forEach((element) => {
     element.addEventListener('click', (event) => {
-        if (userLanguage === 'ru') {
-            if (caps === true) {
-                result.value += event.target.textContent[0].toUpperCase()
-                return
-            }
-            result.value += event.target.textContent[0]
-            result.focus()
-            return
-        } 
-        if (userLanguage === 'en') {
-            if (event.target.textContent.length === 2) {
-                result.value += event.target.textContent[1]
-                result.focus()
-                return
-            }
-            result.value += event.target.textContent[0]
-            result.focus()
+        for (let i = 0; i < keyCodes.length; i+=1) { 
+            result.value += ` ${keyCodes[i]} `
+            // if (event.code === keyCodes[i]) {
+            //     // if (event.code === 'CapsLock') {
+            //     //     //result.value += ` ${keyCodes[i]} `
+            //     //     keys[i].classList.toggle('capslock--active')
+            //     //     result.focus()
+            //     // }
+            //     if (event.code === 'Tab') {
+            //         result.value += '  tab  '
+            //         result.focus()
+            //     }
+            //     //result.value += `${event.code}  `
+            //     keys[i].classList.add('active')
+            //     setTimeout(() => keys[i].classList.remove('active'), 200)
+            //     result.focus()
+            // }
         }
-    })
+    result.focus()
 })
-
-keyCodes.forEach(elem => {
-    element.addEventListener('click', (event) => {
-        switch (elem) {
-            case 'Backspace':
-                result.value = result.value.slice(0, -1)
-                result.focus()
-                break 
-            case 'Tab':
-                result.value += '    '
-                result.focus()
-                break
-            case 'Delete':
-                result.value += '  del  '
-                break
-            case 'CapsLock':
-                caps = !caps
-                //element.toggle('capslock--active')
-                result.focus()
-                break
-            case 'Space':
-                result.value += '  g  '
-                break
-            case 'Enter':
-                result.value += '\n'
-                result.focus()
-                break 
-              
-            case 'Shift':
-            case 'Alt':
-            case 'Ctrl':
-            case 'Win':
-                result.focus()
-                break 
-        }
-       
-        // if (event.document.querySelector === 'space') {
-        //     result.value += '   gg    ';
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === 'Caps Lock') {
-        //     caps = !caps;
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === '') {
-        //     result.value += ' g ';
-        //     res.focus();
-        //     return;
-        // } if (event.document.querySelector === 'shiftR' || event.querySelector === 'shiftL' || event.target.textContent === 'Ctrl' || event.target.textContent === 'Win') {
-        //     result.value = result.value.substring(0, result.value.length - 1)
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === 'Enter') {
-        //     result.value += '\n';
-        //     res.focus();
-        //     return;
-        // } if (event.target.textContent === 'Backspace') {
-        //     result.value = result.value.slice(0, -1);
-        //     res.focus();
-        //     //return;
-        // }
-
-    })
 })
