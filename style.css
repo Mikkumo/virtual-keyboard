@@ -82,6 +82,16 @@ p {
     width: 340px;
 }
 
+.shift--activatable::after {
+    content: '';
+    top: 8px;
+    right: 8px;
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+}
 .capslock--activatable::after {
     content: '';
     top: 10px;
@@ -93,6 +103,7 @@ p {
     border-radius: 50%;
 }
 
+.shift--active::after,
 .capslock--active::after {
     background: #08ff00;
 }
