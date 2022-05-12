@@ -233,7 +233,10 @@ document.addEventListener('keydown', (event) => {
             }
             if (event.code === 'Tab') {
                 event.preventDefault()
-                result.value += '    '
+                let arrB = result.value.substring(0, result.selectionStart)
+                let arrA = result.value.substring(result.selectionEnd)
+                result.value = arrB + '    ' + arrA
+                result.setSelectionRange(arrB.length + 4, arrB.length + 4)
                 result.focus()
             }
             keys[i].classList.add('active')
