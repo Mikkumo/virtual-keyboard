@@ -133,7 +133,7 @@ function show() {
             </div>
         </div>
         <div class="row">
-            <div class="key shiftL">
+            <div class="key shiftL shift--activatable">
                 <span>Shift</span>
             </div>
             <div class="key">
@@ -172,7 +172,7 @@ function show() {
             <div class="key">
                 <i class="material-icons">keyboard_arrow_up</i>
             </div>
-            <div class="key shiftR">
+            <div class="key shiftR shift--activatable">
                 <span>Shift</span>
             </div>
         </div>
@@ -220,6 +220,9 @@ const keyCodes = ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5',
 
 const keys = document.querySelectorAll('.key')
 const result = document.getElementById('text')
+const rus = document.querySelectorAll('.RU')
+const eng = document.querySelectorAll('.ENG')
+let userLanguage = localStorage.getItem('lang')
 
 document.addEventListener('keydown', (event) => {
     for (let i = 0; i < keys.length; i++) { 
@@ -229,6 +232,7 @@ document.addEventListener('keydown', (event) => {
                 result.focus()
             }
             if (event.code === 'Tab') {
+                event.preventDefault()
                 result.value += '    '
                 result.focus()
             }
@@ -240,34 +244,31 @@ document.addEventListener('keydown', (event) => {
     result.focus()
 })
 
-const rus = document.querySelectorAll('.RU')
-const eng = document.querySelectorAll('.ENG')
-let userLanguage = localStorage.getItem('lang')
-
 function switchLang() {
-    console.log(userLanguage + " switch")
     if (userLanguage === 'ru') {
-        eng.forEach(elem => {
-            elem.classList.add('hidden')
-            localStorage.setItem('lang', 'en')
-            userLanguage = 'en'
-        })
+        langHidden('en', eng)
         rusEngSwopper()
     } else {
-        rus.forEach(elem => {
-            elem.classList.add('hidden')
-            localStorage.setItem('lang', 'ru')
-            userLanguage = 'ru'
-        })
+        langHidden('ru', rus)
         rusEngSwopper()
     }
 }
 
-function rusEngSwopper() {
-    rus.forEach(elem => {
-        elem.classList.toggle('hidden')
+function langHidden(lang, keys) {
+    keys.forEach(elem => {
+        elem.classList.add('hidden')
+        localStorage.setItem('lang', lang)
+        userLanguage = lang
     })
-    eng.forEach(elem => {
+}
+
+function rusEngSwopper() {
+    hiddenToggle(rus)
+    hiddenToggle(eng)
+}
+
+function hiddenToggle(keys) {
+    keys.forEach(elem => {
         elem.classList.toggle('hidden')
     })
 }
@@ -285,92 +286,168 @@ document.addEventListener('keydown', function(event) {
 })
 
 let caps = false
+let shift = false
+let cursor = result.selectionStart
+const areaBeforeMyCursor = result.value.substring(0, cursor).split('\n')
+const areaAfterMyCursor = result.value.substring(result.selectionEnd).split('\n')
+
 document.addEventListener('keydown', (event) => {
     if (event.code === 'CapsLock') {
-        if (caps) caps = false
-        else caps = true
-        keys.forEach((elem) => { 
-            if (elem.children[0].className !== 'material-icons' && elem.className === 'key')
-            if (caps) { 
-                console.log(elem.children[0].className + "")
-                elem.children[0].innerHTML = elem.children[0].innerHTML.toUpperCase()
-                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toUpperCase()
-            } else {
-                elem.children[0].innerHTML = elem.children[0].innerHTML.toLowerCase()
-                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toLowerCase()
-            }
-        })
+        caps = capslockClick()
     }
 })
 
+               
 keys.forEach((element) => {
-    element.addEventListener('click', (event) => {
+    element.addEventListener('click', () => {
+        let arrB = result.value.substring(0, result.selectionStart)
+        let arrA = result.value.substring(result.selectionEnd)
         switch (element.children[0].innerHTML) {
             case 'backspace':
-                result.value = result.value.slice(0, -1)
+                backspaceClick()
                 result.focus()
                 return
             case 'keyboard_tab':
-                result.value += '   '
+                result.value = arrB + '    ' + arrA
+                result.setSelectionRange(arrB.length + 4, arrB.length + 4)
                 result.focus()
                 return
             case 'Del':
-                result.value += ' del '
+                delClick()
                 result.focus()
                 return    
             case 'keyboard_capslock':
-                element.classList.toggle('capslock--active');
-                (caps) ? caps = false : caps = true;
+                element.classList.toggle('capslock--active')
+                capslockClick()
                 result.focus()
                 return    
             case 'keyboard_return':
-                result.value += '\n'
+                result.value = arrB + '\n' + arrA
+                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
                 result.focus()
                 return
             case 'keyboard_arrow_up':
-                 
-                result.value = result.value.substring(0, result.value.length - 1)
+                keyUpClick()
                 result.focus()
                 return
             case 'space_bar':
-                result.value += ' '
+                result.value = arrB + ' ' + arrA
+                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
                 result.focus()
                 return
             case 'keyboard_arrow_left':
-                //result.value.moveCursor(result. - 1)
-                result.value += 'left'
+                cursor = result.selectionEnd
+                if (cursor !== 0) {
+                    result.setSelectionRange(cursor, cursor - 1)
+                }
                 result.focus()
                 return
             case 'keyboard_arrow_down':
-                result.value += 'down'
+                keyDownClick()
                 result.focus()
                 return
             case 'keyboard_arrow_right':
-                result.value += 'right'
+                cursor = result.selectionEnd
+                result.setSelectionRange(cursor + 1, cursor + 1)
                 result.focus()
                 return
             case 'Shift':
+                element.classList.toggle('shift--active')
+                shift = !shift
+                result.focus()
+                return
             case 'Alt':
             case 'Ctrl':
             case 'Win':
                 result.focus()
                 break 
         }
-
-        if (userLanguage === 'ru') {
-            if (caps === true) {
-                result.value += element.children[0].innerHTML.toUpperCase()
-                return
-            }
-            result.value += element.children[0].innerHTML
-            result.focus()
-            return
-        }    
-        if (userLanguage === 'en') {
-            if (element.children[1] === undefined) return
-            result.value += element.children[1].innerHTML
-            result.focus()
-            return
-        } 
     })
 })
+
+keys.forEach(element => {
+    if (element.children[0].className !== 'material-icons') {
+        element.addEventListener('click', () => {
+            if (userLanguage === 'ru') {
+                keyClick(element, 0)
+            } else if (userLanguage === 'en') {
+                keyClick(element, 1)
+            }
+        })
+    }
+})
+
+function backspaceClick() {
+    if (result.selectionStart === result.selectionEnd) result.setRangeText('', result.selectionStart - 1, result.selectionStart, 'end')
+    else result.setRangeText('', result.selectionStart, result.selectionEnd, 'end')
+}
+
+function capslockClick() {
+    caps = !caps
+    keys.forEach((elem) => {
+        if (elem.children[0].className !== 'material-icons' && elem.className === 'key')
+            if (caps) {
+                elem.children[0].innerHTML = elem.children[0].innerHTML.toUpperCase()
+                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toUpperCase()
+            } else {
+                elem.children[0].innerHTML = elem.children[0].innerHTML.toLowerCase()
+                if (elem.children[1] !== undefined) elem.children[1].innerHTML = elem.children[1].innerHTML.toLowerCase()
+            }
+    })
+    return caps
+}
+
+function keyClick(key, langCode) {
+    if (shift) {
+        if (withShiftClick(key, langCode)) return
+    }
+    if (key.children[langCode] === undefined) return
+    result.value += key.children[langCode].innerHTML
+    result.focus()
+}
+
+function withShiftClick(key, langCode){
+    let sup = key.querySelector('sup')
+    if (sup !== null) {
+        result.value += sup.innerHTML
+        result.focus()
+        return true
+    } else if (key.className === 'key') {
+        if (key.children[langCode] === undefined) return false
+        if (caps) result.value += key.children[langCode].innerHTML.toLowerCase()
+        else result.value += key.children[langCode].innerHTML.toUpperCase()
+        return true
+    }
+    return false
+}
+
+function delClick() {
+    if (result.selectionStart === result.selectionEnd) result.setRangeText('', result.selectionStart, result.selectionStart + 1, 'end')
+    else result.setRangeText('', result.selectionStart, result.selectionEnd, 'end')
+}
+
+function keyUpClick() {
+    if (areaBeforeMyCursor.length === 1 || areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length >= 50) {
+      cursor -= 50
+    } else if (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length <= areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) {
+      cursor -= (areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) + 1
+    } else {
+      cursor -= areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length + 1
+    }
+    if (cursor < 0) cursor = 0
+    result.setSelectionRange(cursor, cursor)
+}
+
+function keyDownClick() {
+    cursor = result.selectionEnd
+    if (areaAfterMyCursor.length === 1 || areaAfterMyCursor[0].length >= 50) {
+      cursor += 50
+    } else if ((areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) > areaAfterMyCursor[1].length) {
+      cursor += areaAfterMyCursor[0].length + areaAfterMyCursor[1].length + 1
+    } else if (((areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length) + areaAfterMyCursor[0].length) > 50) {
+      cursor += areaAfterMyCursor[0].length
+    } else {
+      cursor += (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) + areaAfterMyCursor[0].length + 1
+    }
+    result.setSelectionRange(cursor, cursor)
+}
