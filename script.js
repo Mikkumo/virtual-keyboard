@@ -235,8 +235,8 @@ document.addEventListener('keydown', (event) => {
                 event.preventDefault()
                 let arrB = result.value.substring(0, result.selectionStart)
                 let arrA = result.value.substring(result.selectionEnd)
-                result.value = arrB + '    ' + arrA
-                result.setSelectionRange(arrB.length + 4, arrB.length + 4)
+                result.value = arrB + '\t' + arrA
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
             }
             keys[i].classList.add('active')
@@ -311,8 +311,8 @@ keys.forEach((element) => {
                 result.focus()
                 return
             case 'keyboard_tab':
-                result.value = arrB + '    ' + arrA
-                result.setSelectionRange(arrB.length + 4, arrB.length + 4)
+                result.value = arrB + '\t' + arrA
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
                 return
             case 'Del':
@@ -326,7 +326,7 @@ keys.forEach((element) => {
                 return    
             case 'keyboard_return':
                 result.value = arrB + '\n' + arrA
-                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
                 return
             case 'keyboard_arrow_up':
@@ -335,7 +335,7 @@ keys.forEach((element) => {
                 return
             case 'space_bar':
                 result.value = arrB + ' ' + arrA
-                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
                 return
             case 'keyboard_arrow_left':
