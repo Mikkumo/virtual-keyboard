@@ -232,6 +232,7 @@ document.addEventListener('keydown', (event) => {
                 result.focus()
             }
             if (event.code === 'Tab') {
+                event.preventDefault()
                 result.value += '    '
                 result.focus()
             }
@@ -286,6 +287,9 @@ document.addEventListener('keydown', function(event) {
 
 let caps = false
 let shift = false
+let cursor = result.selectionStart
+const areaBeforeMyCursor = result.value.substring(0, cursor).split('\n')
+const areaAfterMyCursor = result.value.substring(result.selectionEnd).split('\n')
 
 document.addEventListener('keydown', (event) => {
     if (event.code === 'CapsLock') {
@@ -293,16 +297,19 @@ document.addEventListener('keydown', (event) => {
     }
 })
 
-
+               
 keys.forEach((element) => {
     element.addEventListener('click', () => {
+        let arrB = result.value.substring(0, result.selectionStart)
+        let arrA = result.value.substring(result.selectionEnd)
         switch (element.children[0].innerHTML) {
             case 'backspace':
-                result.value = result.value.slice(0, -1)
+                backspaceClick()
                 result.focus()
                 return
             case 'keyboard_tab':
-                result.value += '   '
+                result.value = arrB + '    ' + arrA
+                result.setSelectionRange(arrB.length + 4, arrB.length + 4)
                 result.focus()
                 return
             case 'Del':
@@ -315,29 +322,33 @@ keys.forEach((element) => {
                 result.focus()
                 return    
             case 'keyboard_return':
-                result.value += '\n'
+                result.value = arrB + '\n' + arrA
+                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
                 result.focus()
                 return
             case 'keyboard_arrow_up':
-                 ////
-                result.value = result.value.substring(0, result.value.length - 1)
+                keyUpClick()
                 result.focus()
                 return
             case 'space_bar':
-                result.value += ' '
+                result.value = arrB + ' ' + arrA
+                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
                 result.focus()
                 return
             case 'keyboard_arrow_left':
-                //result.value.moveCursor(result. - 1)
-                result.value += 'left'
+                cursor = result.selectionEnd
+                if (cursor !== 0) {
+                    result.setSelectionRange(cursor, cursor - 1)
+                }
                 result.focus()
                 return
             case 'keyboard_arrow_down':
-                result.value += 'down'
+                keyDownClick()
                 result.focus()
                 return
             case 'keyboard_arrow_right':
-                result.value += 'right'
+                cursor = result.selectionEnd
+                result.setSelectionRange(cursor + 1, cursor + 1)
                 result.focus()
                 return
             case 'Shift':
@@ -365,6 +376,11 @@ keys.forEach(element => {
         })
     }
 })
+
+function backspaceClick() {
+    if (result.selectionStart === result.selectionEnd) result.setRangeText('', result.selectionStart - 1, result.selectionStart, 'end')
+    else result.setRangeText('', result.selectionStart, result.selectionEnd, 'end')
+}
 
 function capslockClick() {
     caps = !caps
@@ -408,4 +424,30 @@ function withShiftClick(key, langCode){
 function delClick() {
     if (result.selectionStart === result.selectionEnd) result.setRangeText('', result.selectionStart, result.selectionStart + 1, 'end')
     else result.setRangeText('', result.selectionStart, result.selectionEnd, 'end')
+}
+
+function keyUpClick() {
+    if (areaBeforeMyCursor.length === 1 || areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length >= 50) {
+      cursor -= 50
+    } else if (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length <= areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) {
+      cursor -= (areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) + 1
+    } else {
+      cursor -= areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length + 1
+    }
+    if (cursor < 0) cursor = 0
+    result.setSelectionRange(cursor, cursor)
+}
+
+function keyDownClick() {
+    cursor = result.selectionEnd
+    if (areaAfterMyCursor.length === 1 || areaAfterMyCursor[0].length >= 50) {
+      cursor += 50
+    } else if ((areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) > areaAfterMyCursor[1].length) {
+      cursor += areaAfterMyCursor[0].length + areaAfterMyCursor[1].length + 1
+    } else if (((areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length) + areaAfterMyCursor[0].length) > 50) {
+      cursor += areaAfterMyCursor[0].length
+    } else {
+      cursor += (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) + areaAfterMyCursor[0].length + 1
+    }
+    result.setSelectionRange(cursor, cursor)
 }
