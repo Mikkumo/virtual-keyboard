@@ -181,7 +181,7 @@ function show() {
                 <span>Ctrl</span>
             </div>
             <div class="key win">
-                <span>Win</span>
+                <img class="win_key" src="./assets/images/win.png">
             </div>
             <div class="key altL">
                 <span>Alt</span>

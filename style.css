@@ -69,6 +69,10 @@ p {
     color: rgb(58, 17, 69);
 }
 
+.win_key {
+    width: 25px;
+}
+
 .keyboard .backspace,
 .keyboard .capslock, 
 .keyboard .enter {
