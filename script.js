@@ -181,7 +181,7 @@ function show() {
                 <span>Ctrl</span>
             </div>
             <div class="key win">
-                <span>Win</span>
+                <img class="win_key" src="./assets/images/win.png">
             </div>
             <div class="key altL">
                 <span>Alt</span>
@@ -189,8 +189,8 @@ function show() {
             <div class="key space" id="space">
                 <i class="material-icons">space_bar</i>
             </div>
-            <div class="key altR">
-                <span>Alt</span>
+            <div class="key language">
+                <span class="RU">RU</span><span class="ENG">EN</span>
             </div>
             <div class="key ctrlR">
                 <span>Ctrl</span>
@@ -206,8 +206,18 @@ function show() {
             </div>
         </div>
     </div>
-    <p>Операционная система - Windows</p>
-    <p>Для переключения языка нажмите либо левыe Shift + Alt, либо правые Shift + Alt</p>`
+    <p class="keyboard_title">Операционная система - Windows</p>
+    <p class="keyboard_title">Для переключения языка нажмите первую клавишу после space/пробел</p>
+    
+    <section class="theme_toggle">
+        <p class="theme_title">Вы можете выбрать другую тему</p>
+        <div class="theme_btn_container">
+            <button class="theme_btn violet active_btn" type="button"type="button"></button>
+            <button class="theme_btn blue" type="button"type="button"></button>
+            <button class="theme_btn red" type="button"type="button"></button>
+            <button class="theme_btn green" type="button"type="button"></button>
+        </div>
+    </section>`
     body.insertAdjacentHTML('afterbegin', content);
 }
 show()
@@ -223,18 +233,30 @@ const result = document.getElementById('text')
 const rus = document.querySelectorAll('.RU')
 const eng = document.querySelectorAll('.ENG')
 let userLanguage = localStorage.getItem('lang')
+const languageKey = document.querySelector('.language')
 
 document.addEventListener('keydown', (event) => {
     for (let i = 0; i < keys.length; i++) { 
         if (event.code === keyCodes[i]) {
             if (event.code === 'CapsLock') {
                 keys[i].classList.toggle('capslock--active')
+                caps = capslockClick()
                 result.focus()
             }
             if (event.code === 'Tab') {
                 event.preventDefault()
-                result.value += '    '
+                let arrB = result.value.substring(0, result.selectionStart)
+                let arrA = result.value.substring(result.selectionEnd)
+                result.value = arrB + '\t' + arrA
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
+            } 
+            if (event.code === 'AltRight' || event.code === 'AltLeft') {
+                event.preventDefault()
+                result.focus()
+            }
+            if (event.shiftKey && event.altKey || event.code === 'AltRight') {
+                switchLang()
             }
             keys[i].classList.add('active')
             setTimeout(() => keys[i].classList.remove('active'), 200)
@@ -242,6 +264,10 @@ document.addEventListener('keydown', (event) => {
         }
     }
     result.focus()
+})
+
+languageKey.addEventListener('click', function() {
+    switchLang()    
 })
 
 function switchLang() {
@@ -273,16 +299,10 @@ function hiddenToggle(keys) {
     })
 }
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function() {
     if (userLanguage === 'ru') userLanguage = 'en'
     else userLanguage = 'ru'
     switchLang()
-})
-
-document.addEventListener('keydown', function(event) {
-    if (event.shiftKey && event.altKey) {
-        switchLang()
-    }
 })
 
 let caps = false
@@ -290,26 +310,20 @@ let shift = false
 let cursor = result.selectionStart
 const areaBeforeMyCursor = result.value.substring(0, cursor).split('\n')
 const areaAfterMyCursor = result.value.substring(result.selectionEnd).split('\n')
-
-document.addEventListener('keydown', (event) => {
-    if (event.code === 'CapsLock') {
-        caps = capslockClick()
-    }
-})
-
                
 keys.forEach((element) => {
     element.addEventListener('click', () => {
         let arrB = result.value.substring(0, result.selectionStart)
         let arrA = result.value.substring(result.selectionEnd)
+        console.log(result.selectionStart, result.selectionEnd)
         switch (element.children[0].innerHTML) {
             case 'backspace':
                 backspaceClick()
                 result.focus()
                 return
             case 'keyboard_tab':
-                result.value = arrB + '    ' + arrA
-                result.setSelectionRange(arrB.length + 4, arrB.length + 4)
+                result.value = arrB + '\t' + arrA
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
                 return
             case 'Del':
@@ -323,16 +337,16 @@ keys.forEach((element) => {
                 return    
             case 'keyboard_return':
                 result.value = arrB + '\n' + arrA
-                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
-                result.focus()
-                return
-            case 'keyboard_arrow_up':
-                keyUpClick()
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
                 result.focus()
                 return
             case 'space_bar':
                 result.value = arrB + ' ' + arrA
-                result.setSelectionRange(arrB.length + 1, arrB.length + 1)
+                result.setSelectionRange(arrB.length + 1, arrA.length - 1)
+                result.focus()
+                return
+            case 'keyboard_arrow_up':
+                arrowUpClick()
                 result.focus()
                 return
             case 'keyboard_arrow_left':
@@ -343,7 +357,7 @@ keys.forEach((element) => {
                 result.focus()
                 return
             case 'keyboard_arrow_down':
-                keyDownClick()
+                arrowDownClick()
                 result.focus()
                 return
             case 'keyboard_arrow_right':
@@ -354,11 +368,6 @@ keys.forEach((element) => {
             case 'Shift':
                 element.classList.toggle('shift--active')
                 shift = !shift
-                result.focus()
-                return
-            case 'Alt':
-            case 'Ctrl':
-            case 'Win':
                 result.focus()
                 break 
         }
@@ -402,7 +411,18 @@ function keyClick(key, langCode) {
         if (withShiftClick(key, langCode)) return
     }
     if (key.children[langCode] === undefined) return
-    result.value += key.children[langCode].innerHTML
+    if (key.children[langCode].innerHTML === 'EN' || 
+            key.children[langCode].innerHTML === 'RU' ||
+            key.children[langCode].innerHTML === 'Shift' ||
+            key.children[langCode].innerHTML === 'Alt' ||
+            key.children[langCode].innerHTML === 'Ctrl' ||
+            key.children[langCode].innerHTML === 'Del') {
+        result.value 
+    } else {
+        console.log(cursor)
+        result.value += key.children[langCode].innerHTML
+
+    }
     result.focus()
 }
 
@@ -426,28 +446,62 @@ function delClick() {
     else result.setRangeText('', result.selectionStart, result.selectionEnd, 'end')
 }
 
-function keyUpClick() {
+function arrowUpClick() {
     if (areaBeforeMyCursor.length === 1 || areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length >= 50) {
-      cursor -= 50
+        cursor -= 50
     } else if (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length <= areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) {
-      cursor -= (areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) + 1
+        cursor -= (areaBeforeMyCursor[areaBeforeMyCursor.length - 2].length % 50) + 1
     } else {
-      cursor -= areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length + 1
+        cursor -= areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length + 1
     }
     if (cursor < 0) cursor = 0
     result.setSelectionRange(cursor, cursor)
 }
 
-function keyDownClick() {
+function arrowDownClick() {
     cursor = result.selectionEnd
     if (areaAfterMyCursor.length === 1 || areaAfterMyCursor[0].length >= 50) {
-      cursor += 50
+        cursor += 50
     } else if ((areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) > areaAfterMyCursor[1].length) {
-      cursor += areaAfterMyCursor[0].length + areaAfterMyCursor[1].length + 1
+        cursor += areaAfterMyCursor[0].length + areaAfterMyCursor[1].length + 1
     } else if (((areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length) + areaAfterMyCursor[0].length) > 50) {
-      cursor += areaAfterMyCursor[0].length
+        cursor += areaAfterMyCursor[0].length
     } else {
-      cursor += (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) + areaAfterMyCursor[0].length + 1
+        cursor += (areaBeforeMyCursor[areaBeforeMyCursor.length - 1].length % 50) + areaAfterMyCursor[0].length + 1
     }
     result.setSelectionRange(cursor, cursor)
 }
+
+const themeBtn = document.querySelectorAll('.theme_btn');
+const body = document.querySelector('body');
+const textField = document.querySelector('.text');
+const keyboard = document.querySelector('.keyboard');
+
+themeBtn.forEach((element) => {
+    element.addEventListener('click', () => {
+        let activeTheme = document.querySelector('.active_btn');
+        activeTheme.classList.remove('active_btn');
+        element.classList.add('active_btn');
+
+        if (element.classList.contains('violet')) {
+            body.style.background = "url('./assets/images/viol_fon.jpg')";
+            textField.style.background = "rgba(226, 169, 237, 0.85)";
+            keyboard.style.background = "rgb(138, 43, 226)";
+        } 
+        if (element.classList.contains('blue')) {
+            body.style.background = "url('./assets/images/blue_fon.jpg')";
+            textField.style.background = "rgba(102, 207, 233, 0.85)";
+            keyboard.style.background = "rgb(47, 13, 240)";
+        } 
+        if (element.classList.contains('red')) {
+            body.style.background = "url('./assets/images/red_fon.jpg')";
+            textField.style.background = "rgba(248, 86, 86, 0.85)";
+            keyboard.style.background = "rgba(138, 37, 37, 0.849)";
+        } 
+        if (element.classList.contains('green')) {
+            body.style.background = "url('./assets/images/green_fon.jpg')";
+            textField.style.background = "rgba(168, 255, 173, 0.85)";
+            keyboard.style.background = "rgb(0, 66, 9)";
+        }
+    })
+})
